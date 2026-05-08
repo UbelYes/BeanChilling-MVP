@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BeanChilling</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5efe4;
+    --cream-2: #ede4d3;
+    --paper: #fbf8f1;
+    --ink: #1f1611;
+    --ink-2: #4a3a2c;
+    --ink-3: #7a6957;
+    --line: #d8c9b1;
+    --line-soft: #e6dac3;
+    --cherry: #a02a1a;
+    --cherry-dark: #6b1c10;
+    --amber: #c47410;
+    --olive: #6b7a3a;
+    --gold: #b8895a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(184,137,90,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 100%, rgba(160,42,26,0.05) 0%, transparent 50%);
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 22px;
+    margin-bottom: 36px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+
+  .brand h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 38px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .brand .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: var(--paper);
+  }
+
+  .subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  .settings-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    padding: 9px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .settings-btn:hover { background: var(--paper); border-color: var(--ink-3); }
+
+  /* Section */
+  section {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 26px;
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  section h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  section .section-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  /* Settings panel */
+  #settings {
+    display: none;
+  }
+  #settings.open { display: block; }
+
+  .field {
+    margin-bottom: 14px;
+  }
+  .field label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .field input, .field textarea, .field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink);
+    border-radius: 2px;
+    transition: border-color 0.2s;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none;
+    border-color: var(--cherry);
+  }
+  .field .hint {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-3);
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+
+  /* Capture */
+  .capture-area {
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+    background: var(--cream);
+    padding: 36px 24px;
+    text-align: center;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    position: relative;
+  }
+  .capture-area.has-image { padding: 16px; }
+  .capture-area img {
+    max-width: 100%;
+    max-height: 420px;
+    border-radius: 2px;
+    border: 1px solid var(--line);
+  }
+
+  .capture-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    padding: 12px 22px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    border: 1px solid;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  .btn-primary:hover { background: var(--cherry-dark); border-color: var(--cherry-dark); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--line);
+  }
+  .btn-secondary:hover { background: var(--cream-2); border-color: var(--ink-3); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-2);
+    border-color: transparent;
+  }
+  .btn-ghost:hover { color: var(--cherry); }
+
+  .capture-hint {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 14px;
+  }
+
+  input[type="file"] { display: none; }
+
+  /* Analyze bar */
+  .analyze-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line-soft);
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .analyze-bar .note-input {
+    flex: 1;
+    min-width: 180px;
+  }
+  .analyze-bar .note-input input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    background: var(--cream);
+    font-family: 'Manrope', sans-serif;
+    font-size: 13px;
+    border-radius: 2px;
+  }
+
+  /* Results */
+  #results { display: none; }
+  #results.visible { display: block; }
+
+  .result-headline {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 18px 0 16px;
+    border-bottom: 1px solid var(--line-soft);
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .result-headline .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .result-headline .top-prediction {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: var(--ink);
+    text-transform: capitalize;
+    letter-spacing: -0.01em;
+  }
+  .result-headline .top-confidence {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--cherry);
+  }
+
+  .predictions-list { display: flex; flex-direction: column; gap: 12px; }
+  .prediction-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 70px;
+    align-items: center;
+    gap: 14px;
+    font-size: 13px;
+  }
+  .prediction-row .name {
+    font-family: 'Fraunces', serif;
+    text-transform: capitalize;
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .prediction-row .bar-track {
+    height: 6px;
+    background: var(--cream-2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .prediction-row .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--cherry));
+    border-radius: 3px;
+    transition: width 0.6s ease-out;
+  }
+  .prediction-row .pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-2);
+    text-align: right;
+  }
+
+  /* Status */
+  .status {
+    padding: 12px 14px;
+    border-radius: 2px;
+    font-size: 13px;
+    margin-top: 16px;
+    border: 1px solid;
+  }
+  .status.error { background: #fbeae7; border-color: var(--cherry); color: var(--cherry-dark); }
+  .status.info { background: var(--cream); border-color: var(--line); color: var(--ink-2); }
+
+  .loading {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--cream);
+    border-top-color: var(--cherry);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* History */
+  .history-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 18px;
+  }
+  .section-header > div h2 { margin-bottom: 4px; }
+
+  .history-empty {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    text-align: center;
+    padding: 36px 20px;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+  }
+
+  .history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .history-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .history-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: middle;
+  }
+  .history-table tr:last-child td { border-bottom: none; }
+  .history-table .thumb {
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border-radius: 2px;
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .history-table .label-pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    text-transform: capitalize;
+    border: 1px solid;
+  }
+  .label-pill.ripe { color: var(--cherry-dark); border-color: var(--cherry); background: #fbeae7; }
+  .label-pill.unripe { color: #4a5826; border-color: var(--olive); background: #eef0e2; }
+  .label-pill.ripening, .label-pill.semi-ripe { color: #7a4a08; border-color: var(--amber); background: #faedd9; }
+  .label-pill.overripe, .label-pill.spoilt { color: #4a3a2c; border-color: var(--ink-3); background: var(--cream-2); }
+
+  .history-table .date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .history-table .conf {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-2);
+  }
+  .history-table .note-cell {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-2);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--ink-3);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 2px;
+  }
+  .delete-btn:hover { color: var(--cherry); background: var(--cream); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 13px;
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .container { padding: 18px 16px 60px; }
+    .brand h1 { font-size: 28px; }
+    .result-headline .top-prediction { font-size: 24px; }
+    .result-headline .top-confidence { font-size: 20px; }
+    .prediction-row { grid-template-columns: 100px 1fr 56px; gap: 10px; }
+    .history-table { font-size: 12px; }
+    .history-table th:nth-child(5), .history-table td:nth-child(5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+  <div>
+    <div class="brand">
+      <h1>Coffea</h1>
+      <span class="tag">v0.1 · MVP</span>
+    </div>
+    <div class="subtitle">Field documentation tool for coffee cherry ripeness</div>
+  </div>
+  <button class="settings-btn" id="toggleSettings">Settings</button>
+</header>
+
+<section id="settings">
+  <h2>Configuration</h2>
+  <div class="section-meta">Azure Custom Vision endpoint</div>
+
+  <div class="field">
+    <label for="endpointUrl">Prediction URL</label>
+    <input type="text" id="endpointUrl" placeholder="https://your-resource.cognitiveservices.azure.com/customvision/v3.0/Prediction/{project-id}/classify/iterations/{iteration-name}/image" />
+    <span class="hint">From the Custom Vision portal: open your published iteration, click "Prediction URL" and copy the "If you have an image file" URL.</span>
+  </div>
+
+  <div class="field">
+    <label for="predictionKey">Prediction Key</label>
+    <input type="password" id="predictionKey" placeholder="32-character key from your Custom Vision Prediction resource" />
+    <span class="hint">Stored locally in your browser. For production, proxy this through a backend so the key isn't exposed.</span>
+  </div>
+
+  <div class="field-row">
+    <div class="field">
+      <label for="modelName">Model name / iteration</label>
+      <input type="text" id="modelName" placeholder="e.g. cherry-ripeness-v3" />
+    </div>
+    <div class="field">
+      <label for="modelAccuracy">Reported model accuracy (mAP / precision)</label>
+      <input type="text" id="modelAccuracy" placeholder="e.g. 92.4%" />
+    </div>
+  </div>
+
+  <div style="display:flex; gap:10px; margin-top:8px;">
+    <button class="btn btn-primary" id="saveSettings">Save settings</button>
+    <button class="btn btn-ghost" id="testConnection">Test connection</button>
+  </div>
+  <div id="settingsStatus"></div>
+</section>
+
+<section>
+  <h2>New observation</h2>
+  <div class="section-meta">Capture or upload a photo of a coffee cherry branch</div>
+
+  <div class="capture-area" id="captureArea">
+    <div class="capture-hint" id="captureHint">No image selected</div>
+    <div class="capture-buttons">
+      <label class="btn btn-primary" for="cameraInput">
+        Take photo
+      </label>
+      <label class="btn btn-secondary" for="uploadInput">
+        Upload photo
+      </label>
+    </div>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" />
+    <input type="file" id="uploadInput" accept="image/*" />
+  </div>
+
+  <div class="analyze-bar">
+    <div class="note-input">
+      <input type="text" id="noteInput" placeholder="Optional note: location, tree ID, variety…" />
+    </div>
+    <button class="btn btn-primary" id="analyzeBtn" disabled>Analyze</button>
+    <button class="btn btn-ghost" id="clearImageBtn" style="display:none;">Clear</button>
+  </div>
+
+  <div id="analyzeStatus"></div>
+</section>
+
+<section id="results">
+  <h2>Result</h2>
+  <div class="section-meta" id="resultMeta">Awaiting analysis</div>
+
+  <div class="result-headline">
+    <div>
+      <div class="label">Top prediction</div>
+      <div class="top-prediction" id="topPrediction">—</div>
+    </div>
+    <div style="text-align:right;">
+      <div class="label">Confidence</div>
+      <div class="top-confidence" id="topConfidence">—</div>
+    </div>
+  </div>
+
+  <div class="predictions-list" id="predictionsList"></div>
+</section>
+
+<section>
+  <div class="section-header">
+    <div>
+      <h2>Observation log</h2>
+      <div class="section-meta" id="logMeta">0 entries</div>
+    </div>
+    <div class="history-actions">
+      <button class="btn btn-secondary" id="exportCsvBtn">Export CSV</button>
+      <button class="btn btn-ghost" id="clearHistoryBtn">Clear all</button>
+    </div>
+  </div>
+
+  <div id="historyContainer"></div>
+</section>
+
+<footer>
+  Coffea — A field documentation tool. Data stored locally in your browser.
+</footer>
+
+</div>
+
+<script>
+  // ─── State ─────────────────────────────────────────────
+  const STORAGE_KEYS = {
+    settings: 'coffea_settings',
+    history: 'coffea_history'
+  };
+
+  let currentImageBlob = null;
+  let currentImageDataUrl = null;
+  let currentResult = null;
+
+  // ─── Settings ──────────────────────────────────────────
+  function loadSettings() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.settings);
+      if (!raw) return {};
+      return JSON.parse(raw);
+    } catch (e) { return {}; }
+  }
+
+  function saveSettings() {
+    const s = {
+      endpointUrl: document.getElementById('endpointUrl').value.trim(),
+      predictionKey: document.getElementById('predictionKey').value.trim(),
+      modelName: document.getElementById('modelName').value.trim(),
+      modelAccuracy: document.getElementById('modelAccuracy').value.trim()
+    };
+    localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(s));
+    showSettingsStatus('Settings saved.', 'info');
+  }
+
+  function applySettingsToUI() {
+    const s = loadSettings();
+    document.getElementById('endpointUrl').value = s.endpointUrl || '';
+    document.getElementById('predictionKey').value = s.predictionKey || '';
+    document.getElementById('modelName').value = s.modelName || '';
+    document.getElementById('modelAccuracy').value = s.modelAccuracy || '';
+  }
+
+  function showSettingsStatus(msg, kind) {
+    const el = document.getElementById('settingsStatus');
+    el.innerHTML = `<div class="status ${kind}">${msg}</div>`;
+    setTimeout(() => { el.innerHTML = ''; }, 4000);
+  }
+
+  document.getElementById('toggleSettings').addEventListener('click', () => {
+    document.getElementById('settings').classList.toggle('open');
+  });
+  document.getElementById('saveSettings').addEventListener('click', saveSettings);
+
+  document.getElementById('testConnection').addEventListener('click', async () => {
+    saveSettings();
+    const s = loadSettings();
+    if (!s.endpointUrl || !s.predictionKey) {
+      showSettingsStatus('Please enter both URL and key.', 'error');
+      return;
+    }
+    showSettingsStatus('Connection details saved. Run an analysis to verify.', 'info');
+  });
+
+  // ─── Image capture ─────────────────────────────────────
+  function handleFile(file) {
+    if (!file) return;
+    currentImageBlob = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      currentImageDataUrl = e.target.result;
+      renderPreview(currentImageDataUrl);
+      document.getElementById('analyzeBtn').disabled = false;
+      document.getElementById('clearImageBtn').style.display = 'inline-flex';
+      hideResults();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderPreview(dataUrl) {
+    const area = document.getElementById('captureArea');
+    area.classList.add('has-image');
+    area.innerHTML = `
+      <img src="${dataUrl}" alt="Captured cherry" />
+      <div class="capture-buttons">
+        <label class="btn btn-secondary" for="cameraInput">Retake</label>
+        <label class="btn btn-secondary" for="uploadInput">Choose another</label>
+      </div>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" />
+      <input type="file" id="uploadInput" accept="image/*" />
+    `;
+    bindFileInputs();
+  }
+
+  function bindFileInputs() {
+    document.getElementById('cameraInput').addEventListener('change', (e) => handleFile(e.target.files[0]));
+    document.getElementById('uploadInput').addEventListener('change', (e) => handleFile(e.target.files[0]));
+  }
+  bindFileInputs();
+
+  document.getElementById('clearImageBtn').addEventListener('click', () => {
+    currentImageBlob = null;
+    currentImageDataUrl = null;
+    document.getElementById('analyzeBtn').disabled = true;
+    document.getElementById('clearImageBtn').style.display = 'none';
+    document.getElementById('noteInput').value = '';
+    hideResults();
+    const area = document.getElementById('captureArea');
+    area.classList.remove('has-image');
+    area.innerHTML = `
+      <div class="capture-hint">No image selected</div>
+      <div class="capture-buttons">
+        <label class="btn btn-primary" for="cameraInput">Take photo</label>
+        <label class="btn btn-secondary" for="uploadInput">Upload photo</label>
+      </div>
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" />
+      <input type="file" id="uploadInput" accept="image/*" />
+    `;
+    bindFileInputs();
+  });
+
+  // ─── Analyze ───────────────────────────────────────────
+  document.getElementById('analyzeBtn').addEventListener('click', async () => {
+    const s = loadSettings();
+    if (!s.endpointUrl || !s.predictionKey) {
+      showAnalyzeStatus('Please configure your endpoint and key in Settings.', 'error');
+      document.getElementById('settings').classList.add('open');
+      return;
+    }
+    if (!currentImageBlob) return;
+
+    const btn = document.getElementById('analyzeBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loading"></span> Analyzing…';
+    showAnalyzeStatus('Sending image to model…', 'info');
+
+    try {
+      const res = await fetch(s.endpointUrl, {
+        method: 'POST',
+        headers: {
+          'Prediction-Key': s.predictionKey,
+          'Content-Type': 'application/octet-stream'
+        },
+        body: currentImageBlob
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`HTTP ${res.status} — ${text || 'request failed'}`);
+      }
+
+      const data = await res.json();
+      currentResult = data;
+      displayResults(data);
+      saveToHistory(data);
+      clearAnalyzeStatus();
+    } catch (err) {
+      showAnalyzeStatus(`Error: ${err.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Analyze';
+    }
+  });
+
+  function showAnalyzeStatus(msg, kind) {
+    document.getElementById('analyzeStatus').innerHTML = `<div class="status ${kind}">${msg}</div>`;
+  }
+  function clearAnalyzeStatus() {
+    document.getElementById('analyzeStatus').innerHTML = '';
+  }
+
+  function displayResults(data) {
+    const predictions = (data.predictions || []).slice().sort((a, b) => b.probability - a.probability);
+    if (predictions.length === 0) {
+      showAnalyzeStatus('Model returned no predictions.', 'error');
+      return;
+    }
+
+    const top = predictions[0];
+    document.getElementById('topPrediction').textContent = top.tagName;
+    document.getElementById('topConfidence').textContent = (top.probability * 100).toFixed(1) + '%';
+
+    const settings = loadSettings();
+    const metaParts = [];
+    if (settings.modelName) metaParts.push(settings.modelName);
+    if (settings.modelAccuracy) metaParts.push('reported model accuracy: ' + settings.modelAccuracy);
+    metaParts.push(new Date().toLocaleString());
+    document.getElementById('resultMeta').textContent = metaParts.join(' · ');
+
+    const list = document.getElementById('predictionsList');
+    list.innerHTML = '';
+    predictions.forEach(p => {
+      const pct = (p.probability * 100).toFixed(1);
+      const row = document.createElement('div');
+      row.className = 'prediction-row';
+      row.innerHTML = `
+        <div class="name">${p.tagName}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <div class="pct">${pct}%</div>
+      `;
+      list.appendChild(row);
+    });
+
+    document.getElementById('results').classList.add('visible');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideResults() {
+    document.getElementById('results').classList.remove('visible');
+  }
+
+  // ─── Thumbnail ─────────────────────────────────────────
+  function makeThumbnail(dataUrl, maxSize = 120) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  }
+
+  // ─── History ───────────────────────────────────────────
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.history);
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (e) { return []; }
+  }
+
+  function persistHistory(arr) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(arr));
+    } catch (e) {
+      // Storage quota — drop oldest entries
+      const trimmed = arr.slice(-50);
+      localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(trimmed));
+    }
+  }
+
+  async function saveToHistory(result) {
+    const settings = loadSettings();
+    const predictions = (result.predictions || []).slice().sort((a, b) => b.probability - a.probability);
+    const top = predictions[0] || { tagName: 'unknown', probability: 0 };
+    const note = document.getElementById('noteInput').value.trim();
+
+    const thumb = await makeThumbnail(currentImageDataUrl, 120);
+
+    const entry = {
+      id: Date.now() + '-' + Math.random().toString(36).slice(2, 8),
+      timestamp: new Date().toISOString(),
+      thumbnail: thumb,
+      topTag: top.tagName,
+      topConfidence: top.probability,
+      allPredictions: predictions.map(p => ({ tag: p.tagName, prob: p.probability })),
+      note: note,
+      modelName: settings.modelName || '',
+      modelAccuracy: settings.modelAccuracy || ''
+    };
+
+    const history = loadHistory();
+    history.unshift(entry);
+    persistHistory(history);
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = loadHistory();
+    const container = document.getElementById('historyContainer');
+    document.getElementById('logMeta').textContent =
+      history.length === 0 ? '0 entries' : `${history.length} ${history.length === 1 ? 'entry' : 'entries'}`;
+
+    if (history.length === 0) {
+      container.innerHTML = '<div class="history-empty">No observations recorded yet.</div>';
+      return;
+    }
+
+    const rows = history.map(e => {
+      const date = new Date(e.timestamp);
+      const dateStr = date.toLocaleString(undefined, {
+        year: 'numeric', month: 'short', day: '2-digit',
+        hour: '2-digit', minute: '2-digit'
+      });
+      const pillClass = (e.topTag || '').toLowerCase().replace(/[^a-z]/g, '');
+      return `
+        <tr data-id="${e.id}">
+          <td><img class="thumb" src="${e.thumbnail}" alt="" /></td>
+          <td><span class="label-pill ${pillClass}">${e.topTag}</span></td>
+          <td class="conf">${(e.topConfidence * 100).toFixed(1)}%</td>
+          <td class="date">${dateStr}</td>
+          <td class="note-cell" title="${e.note}">${e.note || '—'}</td>
+          <td><button class="delete-btn" data-id="${e.id}" title="Delete">×</button></td>
+        </tr>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Prediction</th>
+            <th>Confidence</th>
+            <th>Recorded</th>
+            <th>Note</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+
+    container.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        const filtered = loadHistory().filter(e => e.id !== id);
+        persistHistory(filtered);
+        renderHistory();
+      });
+    });
+  }
+
+  document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+    if (loadHistory().length === 0) return;
+    if (!confirm('Delete all observations? This cannot be undone.')) return;
+    persistHistory([]);
+    renderHistory();
+  });
+
+  document.getElementById('exportCsvBtn').addEventListener('click', () => {
+    const history = loadHistory();
+    if (history.length === 0) {
+      alert('No observations to export.');
+      return;
+    }
+    const headers = ['timestamp', 'top_prediction', 'top_confidence_percent', 'all_predictions', 'note', 'model_name', 'reported_model_accuracy'];
+    const rows = history.map(e => [
+      e.timestamp,
+      e.topTag,
+      (e.topConfidence * 100).toFixed(2),
+      e.allPredictions.map(p => `${p.tag}:${(p.prob * 100).toFixed(2)}%`).join('; '),
+      e.note,
+      e.modelName,
+      e.modelAccuracy
+    ]);
+    const csv = [headers, ...rows]
+      .map(row => row.map(cell => {
+        const s = String(cell ?? '');
+        return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      }).join(','))
+      .join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `coffea-observations-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // ─── Init ──────────────────────────────────────────────
+  applySettingsToUI();
+  renderHistory();
+
+  // First-run hint
+  if (!loadSettings().endpointUrl) {
+    document.getElementById('settings').classList.add('open');
+  }
+</script>
+
+</body>
+</html>
