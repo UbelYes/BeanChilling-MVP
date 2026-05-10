@@ -427,6 +427,9 @@ input[type="file"] { display: none; }
 .label-pill.unripe { color: var(--moss-dark); border-color: var(--moss); background: #d8d5c8; }
 .label-pill.ripening, .label-pill.semi-ripe { color: var(--ink-2); border-color: var(--amber); background: var(--cream-2); }
 .label-pill.overripe, .label-pill.spoilt { color: var(--ink-2); border-color: var(--ink-3); background: var(--green); }
+.label-pill.arabica { color: #2e3a1f; border-color: #5a7a3a; background: #d4e4c0; }
+.label-pill.robusta { color: #3a2010; border-color: #8a5030; background: #e8d0b8; }
+.label-pill.neither { color: var(--ink-3); border-color: var(--line); background: var(--green); }
 
 .history-table .date {
   font-family: 'JetBrains Mono', monospace;
