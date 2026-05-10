@@ -1,7 +1,7 @@
 // ─── State ─────────────────────────────────────────────
 const STORAGE_KEYS = {
-  settings: 'coffea_settings',
-  history: 'coffea_history'
+  settings: 'beanchilling_settings',
+  history: 'beanchilling_history'
 };
 
 let currentImageBlob = null;
