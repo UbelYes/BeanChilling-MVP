@@ -15,7 +15,6 @@ functions.http('predict', async (req, res) => {
     return;
   }
 
-  // Optional: protect with a simple API key stored as an env var
   const apiKey = process.env.API_KEY;
   if (apiKey && req.headers['x-api-key'] !== apiKey) {
     res.status(401).json({ error: 'Unauthorized' });
@@ -58,7 +57,6 @@ functions.http('predict', async (req, res) => {
 
     const data = await vertexRes.json();
 
-    // Normalize to the same shape the webapp already expects
     const pred = data.predictions[0];
     const predictions = pred.displayNames.map((name, i) => ({
       tagName: name,
