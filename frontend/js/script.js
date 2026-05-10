@@ -93,13 +93,7 @@ function bindFileInputs() {
 }
 bindFileInputs();
 
-document.getElementById('clearImageBtn').addEventListener('click', () => {
-  currentImageBlob = null;
-  currentImageDataUrl = null;
-  document.getElementById('analyzeBtn').disabled = true;
-  document.getElementById('clearImageBtn').style.display = 'none';
-  document.getElementById('noteInput').value = '';
-  hideResults();
+function resetCaptureArea() {
   const area = document.getElementById('captureArea');
   area.classList.remove('has-image');
   area.innerHTML = `
@@ -112,6 +106,16 @@ document.getElementById('clearImageBtn').addEventListener('click', () => {
     <input type="file" id="uploadInput" accept="image/*" />
   `;
   bindFileInputs();
+}
+
+document.getElementById('clearImageBtn').addEventListener('click', () => {
+  currentImageBlob = null;
+  currentImageDataUrl = null;
+  document.getElementById('analyzeBtn').disabled = true;
+  document.getElementById('clearImageBtn').style.display = 'none';
+  document.getElementById('noteInput').value = '';
+  hideResults();
+  resetCaptureArea();
 });
 
 // ─── Analyze ───────────────────────────────────────────
@@ -146,7 +150,7 @@ document.getElementById('analyzeBtn').addEventListener('click', async () => {
 
     const data = await res.json();
     currentResult = data;
-    displayResults(data);
+    displayResults(data, s);
     saveToHistory(data);
     clearAnalyzeStatus();
   } catch (err) {
@@ -164,7 +168,7 @@ function clearAnalyzeStatus() {
   document.getElementById('analyzeStatus').innerHTML = '';
 }
 
-function displayResults(data) {
+function displayResults(data, settings = loadSettings()) {
   const predictions = (data.predictions || []).slice().sort((a, b) => b.probability - a.probability);
   if (predictions.length === 0) {
     showAnalyzeStatus('Model returned no predictions.', 'error');
@@ -175,7 +179,6 @@ function displayResults(data) {
   document.getElementById('topPrediction').textContent = top.tagName;
   document.getElementById('topConfidence').textContent = (top.probability * 100).toFixed(1) + '%';
 
-  const settings = loadSettings();
   const metaParts = [];
   if (settings.modelName) metaParts.push(settings.modelName);
   if (settings.modelAccuracy) metaParts.push('reported model accuracy: ' + settings.modelAccuracy);

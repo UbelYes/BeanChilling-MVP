@@ -10,8 +10,6 @@
   --moss: #706D54;        /* primary accent */
   --moss-dark: #504e3a;   /* primary accent hover */
   --amber: #A08963;
-  --olive: #706D54;
-  --gold: #A08963;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -60,25 +58,6 @@ header {
   line-height: 1;
 }
 
-.brand .tag {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  color: var(--ink-3);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 4px 8px;
-  border: 1px solid var(--line);
-  border-radius: 2px;
-  background: var(--paper);
-}
-
-.subtitle {
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  color: var(--ink-3);
-  font-size: 14px;
-  margin-top: 4px;
-}
 
 .settings-btn {
   background: transparent;
@@ -327,7 +306,7 @@ input[type="file"] { display: none; }
 }
 .prediction-row .bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--gold), var(--moss));
+  background: linear-gradient(90deg, var(--amber), var(--moss));
   border-radius: 3px;
   transition: width 0.6s ease-out;
 }
@@ -462,17 +441,6 @@ input[type="file"] { display: none; }
 }
 .delete-btn:hover { color: var(--moss); background: var(--green); }
 
-/* Footer */
-footer {
-  text-align: center;
-  margin-top: 50px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
-  font-family: 'Fraunces', serif;
-  font-style: italic;
-  color: var(--ink-3);
-  font-size: 13px;
-}
 
 /* Mobile */
 @media (max-width: 600px) {
