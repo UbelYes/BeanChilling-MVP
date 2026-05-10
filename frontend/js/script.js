@@ -20,9 +20,7 @@ function loadSettings() {
 function saveSettings() {
   const s = {
     endpointUrl: document.getElementById('endpointUrl').value.trim(),
-    predictionKey: document.getElementById('predictionKey').value.trim(),
-    modelName: document.getElementById('modelName').value.trim(),
-    modelAccuracy: document.getElementById('modelAccuracy').value.trim()
+    predictionKey: document.getElementById('predictionKey').value.trim()
   };
   localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(s));
   showSettingsStatus('Settings saved.', 'info');
@@ -32,8 +30,6 @@ function applySettingsToUI() {
   const s = loadSettings();
   document.getElementById('endpointUrl').value = s.endpointUrl || '';
   document.getElementById('predictionKey').value = s.predictionKey || '';
-  document.getElementById('modelName').value = s.modelName || '';
-  document.getElementById('modelAccuracy').value = s.modelAccuracy || '';
 }
 
 function showSettingsStatus(msg, kind) {
@@ -179,11 +175,7 @@ function displayResults(data, settings = loadSettings()) {
   document.getElementById('topPrediction').textContent = top.tagName;
   document.getElementById('topConfidence').textContent = (top.probability * 100).toFixed(1) + '%';
 
-  const metaParts = [];
-  if (settings.modelName) metaParts.push(settings.modelName);
-  if (settings.modelAccuracy) metaParts.push('reported model accuracy: ' + settings.modelAccuracy);
-  metaParts.push(new Date().toLocaleString());
-  document.getElementById('resultMeta').textContent = metaParts.join(' · ');
+  document.getElementById('resultMeta').textContent = new Date().toLocaleString();
 
   const list = document.getElementById('predictionsList');
   list.innerHTML = '';
@@ -259,9 +251,7 @@ async function saveToHistory(result) {
     topTag: top.tagName,
     topConfidence: top.probability,
     allPredictions: predictions.map(p => ({ tag: p.tagName, prob: p.probability })),
-    note: note,
-    modelName: settings.modelName || '',
-    modelAccuracy: settings.modelAccuracy || ''
+    note: note
   };
 
   const history = loadHistory();
@@ -339,15 +329,13 @@ document.getElementById('exportCsvBtn').addEventListener('click', () => {
     alert('No observations to export.');
     return;
   }
-  const headers = ['timestamp', 'top_prediction', 'top_confidence_percent', 'all_predictions', 'note', 'model_name', 'reported_model_accuracy'];
+  const headers = ['timestamp', 'top_prediction', 'top_confidence_percent', 'all_predictions', 'note'];
   const rows = history.map(e => [
     e.timestamp,
     e.topTag,
     (e.topConfidence * 100).toFixed(2),
     e.allPredictions.map(p => `${p.tag}:${(p.prob * 100).toFixed(2)}%`).join('; '),
-    e.note,
-    e.modelName,
-    e.modelAccuracy
+    e.note
   ]);
   const csv = [headers, ...rows]
     .map(row => row.map(cell => {
