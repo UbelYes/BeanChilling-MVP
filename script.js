@@ -54,7 +54,7 @@ document.getElementById('testConnection').addEventListener('click', async () => 
     showSettingsStatus('Please enter both URL and key.', 'error');
     return;
   }
-  showSettingsStatus('Connection details saved. Run an analysis to verify.', 'info');
+  showSettingsStatus('Cloud Function URL and key saved. Run an analysis to verify.', 'info');
 });
 
 // ─── Image capture ─────────────────────────────────────
@@ -130,12 +130,12 @@ document.getElementById('analyzeBtn').addEventListener('click', async () => {
   showAnalyzeStatus('Sending image to model…', 'info');
 
   try {
+    const headers = { 'Content-Type': 'application/octet-stream' };
+    if (s.predictionKey) headers['X-Api-Key'] = s.predictionKey;
+
     const res = await fetch(s.endpointUrl, {
       method: 'POST',
-      headers: {
-        'Prediction-Key': s.predictionKey,
-        'Content-Type': 'application/octet-stream'
-      },
+      headers,
       body: currentImageBlob
     });
 

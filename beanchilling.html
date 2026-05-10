@@ -24,18 +24,18 @@
 
 <section id="settings">
   <h2>Configuration</h2>
-  <div class="section-meta">Azure Custom Vision endpoint</div>
+  <div class="section-meta">Google Cloud Vertex AI — via Cloud Function proxy</div>
 
   <div class="field">
-    <label for="endpointUrl">Azure URL</label>
-    <input type="text" id="endpointUrl" placeholder="https://your-resource.cognitiveservices.azure.com/customvision/v3.0/Prediction/{project-id}/classify/iterations/{iteration-name}/image" />
-    <span class="hint">From the Custom Vision portal: open your published iteration, click "Prediction URL" and copy the "If you have an image file" URL.</span>
+    <label for="endpointUrl">Cloud Function URL</label>
+    <input type="text" id="endpointUrl" placeholder="https://us-central1-YOUR_PROJECT_ID.cloudfunctions.net/beanchilling-predict" />
+    <span class="hint">The URL printed by gcloud after you deploy the beanchilling-predict Cloud Function.</span>
   </div>
 
   <div class="field">
-    <label for="predictionKey">Prediction Key</label>
-    <input type="password" id="predictionKey" placeholder="32-character key from your Custom Vision Prediction resource" />
-    <span class="hint">Stored locally in your browser. For production, proxy this through a backend so the key isn't exposed.</span>
+    <label for="predictionKey">API Key</label>
+    <input type="password" id="predictionKey" placeholder="The API_KEY value you set when deploying the Cloud Function" />
+    <span class="hint">Stored locally in your browser. Must match the API_KEY env var on your Cloud Function.</span>
   </div>
 
   <div class="field-row">
